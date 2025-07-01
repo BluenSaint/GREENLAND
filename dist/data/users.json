@@ -1,0 +1,41 @@
+[
+  {
+    "id": "1",
+    "email": "admin@creditfix.com",
+    "password": "admin123",
+    "role": "admin",
+    "firstName": "Sarah",
+    "lastName": "Johnson",
+    "avatar": "/images/consultant.jpg",
+    "createdAt": "2024-01-15T08:00:00Z",
+    "lastLogin": "2025-06-25T16:00:00Z",
+    "isActive": true,
+    "permissions": ["all"]
+  },
+  {
+    "id": "2",
+    "email": "specialist@creditfix.com",
+    "password": "specialist123",
+    "role": "specialist",
+    "firstName": "Michael",
+    "lastName": "Davis",
+    "avatar": "/images/consultant.jpg",
+    "createdAt": "2024-02-01T08:00:00Z",
+    "lastLogin": "2025-06-25T15:30:00Z",
+    "isActive": true,
+    "permissions": ["client_management", "dispute_management", "reports"]
+  },
+  {
+    "id": "3",
+    "email": "john.smith@email.com",
+    "password": "client123",
+    "role": "client",
+    "firstName": "John",
+    "lastName": "Smith",
+    "avatar": "/images/hero-team.jpg",
+    "createdAt": "2024-03-15T08:00:00Z",
+    "lastLogin": "2025-06-25T14:00:00Z",
+    "isActive": true,
+    "permissions": ["client_portal"]
+  }
+]

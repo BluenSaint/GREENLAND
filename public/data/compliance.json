@@ -1,0 +1,46 @@
+{
+  "croaContract": {
+    "title": "Credit Repair Services Agreement",
+    "sections": [
+      {
+        "id": "services",
+        "title": "Services to be Performed",
+        "content": "CreditFix Pro will perform the following services:\n\n1. Review your credit reports from Equifax, Experian, and TransUnion\n2. Identify potentially inaccurate, unverifiable, or unfair items\n3. Prepare and send dispute letters on your behalf\n4. Monitor responses from credit bureaus and creditors\n5. Provide ongoing credit education and improvement strategies\n6. Maintain secure records of all activities"
+      },
+      {
+        "id": "fees",
+        "title": "Fees and Payment Terms",
+        "content": "Monthly Service Fee: ${monthlyFee}\nSetup Fee: ${setupFee}\n\nFees are billed monthly in advance. No payment is required until services begin. You may cancel at any time with 30 days written notice."
+      },
+      {
+        "id": "cancellation",
+        "title": "Right to Cancel",
+        "content": "YOU HAVE THE RIGHT TO CANCEL THIS CONTRACT WITHOUT PENALTY OR OBLIGATION WITHIN THREE (3) BUSINESS DAYS FROM THE DATE YOU SIGN IT.\n\nTo cancel, send written notice to:\nCreditFix Pro\n123 Business Avenue\nAustin, TX 78701\nEmail: cancel@creditfix.com\n\nIf you cancel within three business days, any payments made will be refunded within 10 business days."
+      },
+      {
+        "id": "timeline",
+        "title": "Performance Timeline",
+        "content": "Credit repair is a process that typically takes 3-6 months, though results may vary. We cannot guarantee specific results or timeframes, as this depends on the complexity of your credit profile and the responses from credit bureaus and creditors."
+      },
+      {
+        "id": "termination",
+        "title": "Termination",
+        "content": "Either party may terminate this agreement with 30 days written notice. Upon termination, you will only be responsible for fees for services already performed."
+      }
+    ]
+  },
+  "consumerRights": {
+    "title": "Consumer Credit File Rights Under State and Federal Law",
+    "content": "You have the right to:\n\n• Obtain a copy of your credit file from each credit reporting agency\n• Dispute inaccurate information in your credit file\n• Have inaccurate information corrected or deleted\n• Include a statement in your file if a dispute is not resolved to your satisfaction\n• Have negative information removed after 7 years (10 years for bankruptcies)\n• Have your credit report provided to you free of charge once per year from each credit bureau\n• Have your credit score if it was used in an adverse action\n• Limit who can access your credit report\n• Seek monetary damages if your rights are violated\n\nYou may perform many credit repair services yourself at no cost. The credit bureaus are required to investigate disputes and correct or delete inaccurate information. You can:\n\n• Contact credit bureaus directly to dispute information\n• Request free annual credit reports from annualcreditreport.com\n• Add fraud alerts or security freezes to your credit files\n• Work directly with creditors to resolve issues\n\nFor more information about your rights:\n• Federal Trade Commission: consumer.ftc.gov\n• Consumer Financial Protection Bureau: consumerfinance.gov"
+  },
+  "disclosures": [
+    {
+      "title": "Important Information About Credit Repair Services",
+      "content": "• Credit repair companies cannot remove accurate and timely negative information from your credit report\n• You can improve your credit yourself by paying bills on time and reducing debt\n• Results are not guaranteed and may vary\n• Typical credit repair process takes 3-6 months\n• You have the right to cancel within 3 business days without penalty"
+    },
+    {
+      "title": "State Law Notice",
+      "content": "Some states require credit repair organizations to be licensed or bonded. Check with your state attorney general's office for information about licensing requirements in your state."
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+[
+  {
+    "id": "credit-basics",
+    "title": "Understanding Credit Basics",
+    "category": "Credit Fundamentals",
+    "difficulty": "Beginner",
+    "readTime": "5 min",
+    "content": {
+      "introduction": "Your credit score is one of the most important financial numbers in your life. It affects your ability to get loans, credit cards, and even rent an apartment.",
+      "sections": [
+        {
+          "title": "What is a Credit Score?",
+          "content": "A credit score is a three-digit number that represents your creditworthiness. Scores typically range from 300 to 850, with higher scores indicating better credit."
+        },
+        {
+          "title": "Credit Score Ranges",
+          "content": "• Excellent: 750-850\n• Good: 700-749\n• Fair: 650-699\n• Poor: 600-649\n• Bad: Below 600"
+        },
+        {
+          "title": "Who Creates Credit Scores?",
+          "content": "The most common credit scores are FICO scores and VantageScore. These are calculated using information from your credit reports from the three major credit bureaus: Equifax, Experian, and TransUnion."
+        }
+      ],
+      "keyTakeaways": [
+        "Credit scores range from 300-850",
+        "Higher scores mean better credit terms",
+        "Multiple scoring models exist",
+        "Scores are based on credit report data"
+      ]
+    }
+  },
+  {
+    "id": "credit-factors",
+    "title": "Factors That Affect Your Credit Score",
+    "category": "Credit Fundamentals",
+    "difficulty": "Beginner",
+    "readTime": "7 min",
+    "content": {
+      "introduction": "Understanding what factors influence your credit score is crucial for improving and maintaining good credit.",
+      "sections": [
+        {
+          "title": "Payment History (35%)",
+          "content": "This is the most important factor. It includes:\n• On-time payments vs. late payments\n• How late payments were\n• How recently late payments occurred\n• Accounts in collections or charged off"
+        },
+        {
+          "title": "Credit Utilization (30%)",
+          "content": "This measures how much credit you're using:\n• Keep utilization below 30%\n• Lower utilization is better\n• Both individual and overall utilization matter"
+        },
+        {
+          "title": "Length of Credit History (15%)",
+          "content": "This includes:\n• Age of your oldest account\n• Average age of all accounts\n• How long since you've used accounts"
+        },
+        {
+          "title": "Credit Mix (10%)",
+          "content": "Having different types of credit can help:\n• Credit cards\n• Auto loans\n• Mortgages\n• Personal loans"
+        },
+        {
+          "title": "New Credit (10%)",
+          "content": "This factor considers:\n• Recent credit inquiries\n• Number of new accounts\n• Time since last inquiry"
+        }
+      ],
+      "keyTakeaways": [
+        "Payment history is most important (35%)",
+        "Keep credit utilization low",
+        "Maintain older accounts",
+        "Don't apply for too much new credit"
+      ]
+    }
+  },
+  {
+    "id": "improving-credit",
+    "title": "How to Improve Your Credit Score",
+    "category": "Credit Improvement",
+    "difficulty": "Intermediate",
+    "readTime": "10 min",
+    "content": {
+      "introduction": "Improving your credit score takes time and consistent effort, but the benefits are worth it.",
+      "sections": [
+        {
+          "title": "Pay Bills on Time",
+          "content": "• Set up automatic payments\n• Use calendar reminders\n• Pay at least the minimum amount\n• Prioritize credit accounts"
+        },
+        {
+          "title": "Reduce Credit Card Balances",
+          "content": "• Pay down high balances first\n• Consider balance transfer cards\n• Make multiple payments per month\n• Don't close old accounts"
+        },
+        {
+          "title": "Dispute Inaccurate Information",
+          "content": "• Review credit reports regularly\n• File disputes for errors\n• Follow up on dispute responses\n• Keep documentation"
+        },
+        {
+          "title": "Build Credit History",
+          "content": "• Keep old accounts open\n• Consider becoming an authorized user\n• Use credit cards regularly but responsibly\n• Consider a secured credit card if needed"
+        }
+      ],
+      "keyTakeaways": [
+        "Consistency is key to improvement",
+        "Focus on payment history first",
+        "Lower balances improve scores quickly",
+        "Monitor your credit regularly"
+      ]
+    }
+  },
+  {
+    "id": "credit-monitoring",
+    "title": "Monitoring Your Credit",
+    "category": "Credit Management",
+    "difficulty": "Beginner",
+    "readTime": "6 min",
+    "content": {
+      "introduction": "Regular credit monitoring helps you stay on top of changes and catch errors or fraud early.",
+      "sections": [
+        {
+          "title": "Free Credit Reports",
+          "content": "You're entitled to one free credit report per year from each bureau at annualcreditreport.com. Consider spacing them out every 4 months."
+        },
+        {
+          "title": "Credit Monitoring Services",
+          "content": "Many services offer:\n• Monthly credit score updates\n• Credit report monitoring\n• Fraud alerts\n• Identity theft protection"
+        },
+        {
+          "title": "What to Look For",
+          "content": "When reviewing your reports:\n• Personal information accuracy\n• Account information\n• Payment history\n• Accounts you don't recognize\n• Inquiries you didn't authorize"
+        }
+      ],
+      "keyTakeaways": [
+        "Check reports at least annually",
+        "Use free resources when possible",
+        "Act quickly on errors or fraud",
+        "Monitor for identity theft"
+      ]
+    }
+  },
+  {
+    "id": "debt-management",
+    "title": "Effective Debt Management Strategies",
+    "category": "Debt Management",
+    "difficulty": "Intermediate",
+    "readTime": "12 min",
+    "content": {
+      "introduction": "Managing debt effectively is crucial for maintaining and improving your credit score.",
+      "sections": [
+        {
+          "title": "Debt Avalanche Method",
+          "content": "Focus on paying off debts with the highest interest rates first while making minimum payments on others. This saves the most money in interest."
+        },
+        {
+          "title": "Debt Snowball Method",
+          "content": "Pay off smallest debts first for psychological wins. While you may pay more interest overall, the motivation can help you stick to the plan."
+        },
+        {
+          "title": "Debt Consolidation",
+          "content": "Options include:\n• Personal loans\n• Balance transfer credit cards\n• Home equity loans\n• Debt management plans"
+        },
+        {
+          "title": "Creating a Budget",
+          "content": "Track your income and expenses to find money for debt payments:\n• Use the 50/30/20 rule\n• Cut unnecessary expenses\n• Increase income when possible"
+        }
+      ],
+      "keyTakeaways": [
+        "Choose a debt payoff strategy that works for you",
+        "Consider consolidation options",
+        "Create and stick to a budget",
+        "Focus on high-interest debt first"
+      ]
+    }
+  }
+]

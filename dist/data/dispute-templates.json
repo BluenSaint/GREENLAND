@@ -1,0 +1,37 @@
+[
+  {
+    "id": "template-001",
+    "name": "Not My Account",
+    "category": "Account Ownership",
+    "description": "Use when the account does not belong to the client",
+    "template": "Dear Credit Bureau,\n\nI am writing to dispute the following item on my credit report:\n\nCreditor: {creditor}\nAccount Number: {account}\nDate Reported: {dateReported}\n\nThis account does not belong to me. I have never had an account with this creditor, nor have I authorized anyone to open an account in my name. I am requesting that this item be removed from my credit report immediately.\n\nPlease investigate this matter and provide me with the results of your investigation within 30 days as required by the Fair Credit Reporting Act.\n\nSincerely,\n{clientName}\n{clientAddress}\n{clientPhone}\n\nEnclosures: Copy of ID, Proof of Address"
+  },
+  {
+    "id": "template-002",
+    "name": "Paid in Full",
+    "category": "Payment Status",
+    "description": "Use when the account has been paid but still shows as delinquent",
+    "template": "Dear Credit Bureau,\n\nI am writing to dispute the following item on my credit report:\n\nCreditor: {creditor}\nAccount Number: {account}\nDate Reported: {dateReported}\n\nThis account has been paid in full as of {paymentDate}. The current status shown on my credit report is inaccurate and does not reflect the true status of this account. I am requesting that this item be updated to reflect the correct 'Paid' status or removed entirely if the creditor cannot verify the accuracy.\n\nPlease investigate this matter and provide me with the results of your investigation within 30 days as required by the Fair Credit Reporting Act.\n\nSincerely,\n{clientName}\n{clientAddress}\n{clientPhone}\n\nEnclosures: Proof of Payment, Copy of ID"
+  },
+  {
+    "id": "template-003",
+    "name": "Inaccurate Information",
+    "category": "Data Accuracy",
+    "description": "Use when account information contains errors",
+    "template": "Dear Credit Bureau,\n\nI am writing to dispute the following item on my credit report:\n\nCreditor: {creditor}\nAccount Number: {account}\nDate Reported: {dateReported}\n\nThe information reported for this account contains inaccuracies. Specifically:\n- {specificError1}\n- {specificError2}\n\nI am requesting that you investigate this matter and either correct the inaccurate information or remove the item entirely if it cannot be verified.\n\nPlease investigate this matter and provide me with the results of your investigation within 30 days as required by the Fair Credit Reporting Act.\n\nSincerely,\n{clientName}\n{clientAddress}\n{clientPhone}\n\nEnclosures: Supporting Documentation, Copy of ID"
+  },
+  {
+    "id": "template-004",
+    "name": "Statute of Limitations",
+    "category": "Time Limits",
+    "description": "Use when the debt is beyond the reporting time limit",
+    "template": "Dear Credit Bureau,\n\nI am writing to dispute the following item on my credit report:\n\nCreditor: {creditor}\nAccount Number: {account}\nDate of Last Activity: {lastActivity}\n\nThis item has exceeded the maximum reporting period allowed under the Fair Credit Reporting Act. The date of last activity was {lastActivity}, which is more than 7 years ago. This item should no longer appear on my credit report.\n\nI am requesting immediate removal of this item from my credit report.\n\nPlease investigate this matter and provide me with the results of your investigation within 30 days as required by the Fair Credit Reporting Act.\n\nSincerely,\n{clientName}\n{clientAddress}\n{clientPhone}\n\nEnclosures: Copy of ID, Proof of Address"
+  },
+  {
+    "id": "template-005",
+    "name": "Identity Theft",
+    "category": "Fraud",
+    "description": "Use when the account is a result of identity theft",
+    "template": "Dear Credit Bureau,\n\nI am writing to dispute the following item on my credit report as a result of identity theft:\n\nCreditor: {creditor}\nAccount Number: {account}\nDate Reported: {dateReported}\n\nThis account was opened fraudulently without my knowledge or authorization. I have filed a police report (Report #: {policeReportNumber}) and an identity theft affidavit with the Federal Trade Commission.\n\nI am requesting immediate removal of this fraudulent item from my credit report.\n\nPlease investigate this matter and provide me with the results of your investigation within 30 days as required by the Fair Credit Reporting Act.\n\nSincerely,\n{clientName}\n{clientAddress}\n{clientPhone}\n\nEnclosures: Police Report, FTC Identity Theft Affidavit, Copy of ID"
+  }
+]
