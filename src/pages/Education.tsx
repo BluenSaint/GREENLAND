@@ -12,22 +12,7 @@ import {
   Shield,
   Search
 } from 'lucide-react';
-
-interface EducationContent {
-  id: string;
-  title: string;
-  category: string;
-  difficulty: string;
-  readTime: string;
-  content: {
-    introduction: string;
-    sections: Array<{
-      title: string;
-      content: string;
-    }>;
-    keyTakeaways: string[];
-  };
-}
+import { educationService, type EducationContent } from '../services/educationService';
 
 const Education: React.FC = () => {
   const [educationContent, setEducationContent] = useState<EducationContent[]>([]);
@@ -42,8 +27,8 @@ const Education: React.FC = () => {
 
   const loadEducationContent = async () => {
     try {
-      const response = await fetch('/data/education.json');
-      const data = await response.json();
+      setLoading(true);
+      const data = await educationService.getEducationContent();
       setEducationContent(data);
     } catch (error) {
       console.error('Failed to load education content:', error);
@@ -125,7 +110,12 @@ const Education: React.FC = () => {
           <div className="flex items-center space-x-3">
             <Clock className="w-8 h-8 text-green-600" />
             <div>
-              <div className="text-2xl font-bold text-gray-900">45</div>
+              <div className="text-2xl font-bold text-gray-900">
+                {educationContent.reduce((total, content) => {
+                  const minutes = parseInt(content.readTime.split(' ')[0]);
+                  return total + minutes;
+                }, 0)}
+              </div>
               <div className="text-sm text-gray-600">Min Reading</div>
             </div>
           </div>

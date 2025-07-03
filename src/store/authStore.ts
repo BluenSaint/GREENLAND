@@ -1,18 +1,8 @@
 import { create } from 'zustand';
-
-export interface User {
-  id: string;
-  email: string;
-  role: 'admin' | 'specialist' | 'client';
-  firstName: string;
-  lastName: string;
-  avatar?: string;
-  permissions: string[];
-  isActive: boolean;
-}
+import { authService, type AuthUser } from '../services/authService';
 
 interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -22,56 +12,57 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>()((set, get) => ({
-      user: null,
-      isAuthenticated: false,
-      isLoading: false,
-      error: null,
+  user: null,
+  isAuthenticated: false,
+  isLoading: false,
+  error: null,
 
-      login: async (email: string, password: string) => {
-        set({ isLoading: true, error: null });
-        
-        try {
-          // Simulate API call
-          const response = await fetch('/data/users.json');
-          const users = await response.json();
-          
-          const user = users.find((u: any) => 
-            u.email === email && u.password === password && u.isActive
-          );
+  login: async (email: string, password: string) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      const { user, error } = await authService.signIn(email, password);
 
-          if (user) {
-            const { password: _, ...userWithoutPassword } = user;
-            set({ 
-              user: userWithoutPassword, 
-              isAuthenticated: true, 
-              isLoading: false 
-            });
-            return true;
-          } else {
-            set({ 
-              error: 'Invalid email or password', 
-              isLoading: false 
-            });
-            return false;
-          }
-        } catch (error) {
-          set({ 
-            error: 'Login failed. Please try again.', 
-            isLoading: false 
-          });
-          return false;
-        }
-      },
-
-      logout: () => {
+      if (user) {
         set({ 
-          user: null, 
-          isAuthenticated: false, 
-          error: null 
+          user, 
+          isAuthenticated: true, 
+          isLoading: false 
         });
-      },
+        return true;
+      } else {
+        set({ 
+          error: error || 'Login failed', 
+          isLoading: false 
+        });
+        return false;
+      }
+    } catch (error) {
+      set({ 
+        error: 'Login failed. Please try again.', 
+        isLoading: false 
+      });
+      return false;
+    }
+  },
 
-      clearError: () => {
-        set({ error: null });
-      },
-    }));
+  logout: async () => {
+    try {
+      await authService.signOut();
+      set({ 
+        user: null, 
+        isAuthenticated: false, 
+        error: null 
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  },
+
+  clearError: () => {
+    set({ error: null });
+  },
+}));
+
+// Re-export types for backward compatibility
+export type { AuthUser as User };

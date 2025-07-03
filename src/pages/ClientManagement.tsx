@@ -13,40 +13,19 @@ import {
   Phone,
   Mail
 } from 'lucide-react';
+import { clientService, creditScoreService, negativeItemService } from '../services/clientService';
+import type { Client } from '../lib/supabase';
 
-interface Client {
-  id: string;
-  personalInfo: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-  };
-  caseInfo: {
-    caseNumber: string;
-    status: string;
-    assignedSpecialist: string;
-    startDate: string;
-    packageType: string;
-    monthlyFee: number;
-  };
-  creditScores: {
-    current: {
-      average: number;
-    };
-    initial: {
-      average: number;
-    };
-  };
-  negativeItems: {
-    total: number;
-    removed: number;
-    inProgress: number;
-  };
+interface ClientWithStats extends Client {
+  currentScore?: number;
+  initialScore?: number;
+  negativeItemsRemoved?: number;
+  negativeItemsTotal?: number;
+  negativeItemsInProgress?: number;
 }
 
 const ClientManagement: React.FC = () => {
-  const [clients, setClients] = useState<Client[]>([]);
+  const [clients, setClients] = useState<ClientWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -58,9 +37,37 @@ const ClientManagement: React.FC = () => {
 
   const loadClients = async () => {
     try {
-      const response = await fetch('/data/clients.json');
-      const data = await response.json();
-      setClients(data);
+      setLoading(true);
+      const clientsData = await clientService.getClients();
+      
+      // Load additional stats for each client
+      const clientsWithStats = await Promise.all(
+        clientsData.map(async (client) => {
+          try {
+            const [creditScores, negativeItems] = await Promise.all([
+              creditScoreService.getCreditScores(client.id),
+              negativeItemService.getNegativeItems(client.id)
+            ]);
+
+            const currentScore = creditScores[creditScores.length - 1];
+            const initialScore = creditScores[0];
+
+            return {
+              ...client,
+              currentScore: currentScore?.average,
+              initialScore: initialScore?.average,
+              negativeItemsRemoved: negativeItems.filter(item => item.status === 'removed').length,
+              negativeItemsTotal: negativeItems.length,
+              negativeItemsInProgress: negativeItems.filter(item => item.status === 'in_progress').length
+            };
+          } catch (error) {
+            console.error(`Error loading stats for client ${client.id}:`, error);
+            return client;
+          }
+        })
+      );
+
+      setClients(clientsWithStats);
     } catch (error) {
       console.error('Failed to load clients:', error);
     } finally {
@@ -70,24 +77,27 @@ const ClientManagement: React.FC = () => {
 
   const filteredClients = clients
     .filter(client => {
+      const personalInfo = client.personal_info || {};
       const matchesSearch = 
-        client.personalInfo.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        client.personalInfo.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        client.personalInfo.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        client.caseInfo.caseNumber.toLowerCase().includes(searchTerm.toLowerCase());
+        personalInfo.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        personalInfo.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        personalInfo.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        client.case_number.toLowerCase().includes(searchTerm.toLowerCase());
       
-      const matchesStatus = statusFilter === 'all' || client.caseInfo.status === statusFilter;
+      const matchesStatus = statusFilter === 'all' || client.status === statusFilter;
       
       return matchesSearch && matchesStatus;
     })
     .sort((a, b) => {
       switch (sortBy) {
         case 'name':
-          return a.personalInfo.lastName.localeCompare(b.personalInfo.lastName);
+          const aName = `${a.personal_info?.lastName || ''} ${a.personal_info?.firstName || ''}`;
+          const bName = `${b.personal_info?.lastName || ''} ${b.personal_info?.firstName || ''}`;
+          return aName.localeCompare(bName);
         case 'score':
-          return b.creditScores.current.average - a.creditScores.current.average;
+          return (b.currentScore || 0) - (a.currentScore || 0);
         case 'startDate':
-          return new Date(b.caseInfo.startDate).getTime() - new Date(a.caseInfo.startDate).getTime();
+          return new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
         default:
           return 0;
       }
@@ -112,7 +122,9 @@ const ClientManagement: React.FC = () => {
     );
   };
 
-  const getScoreTrend = (current: number, initial: number) => {
+  const getScoreTrend = (current?: number, initial?: number) => {
+    if (!current || !initial) return <span className="text-gray-500">No data</span>;
+    
     const change = current - initial;
     if (change > 0) {
       return (
@@ -201,19 +213,22 @@ const ClientManagement: React.FC = () => {
         </div>
         <div className="bg-white rounded-xl p-6 shadow-sm border">
           <div className="text-2xl font-bold text-green-600">
-            {clients.filter(c => c.caseInfo.status === 'active').length}
+            {clients.filter(c => c.status === 'active').length}
           </div>
           <div className="text-sm text-gray-600">Active Cases</div>
         </div>
         <div className="bg-white rounded-xl p-6 shadow-sm border">
           <div className="text-2xl font-bold text-blue-600">
-            {Math.round(clients.reduce((sum, c) => sum + c.creditScores.current.average, 0) / clients.length)}
+            {clients.length > 0 ? Math.round(
+              clients.reduce((sum, c) => sum + (c.currentScore || 0), 0) / 
+              clients.filter(c => c.currentScore).length
+            ) : 0}
           </div>
           <div className="text-sm text-gray-600">Avg. Credit Score</div>
         </div>
         <div className="bg-white rounded-xl p-6 shadow-sm border">
           <div className="text-2xl font-bold text-purple-600">
-            {clients.reduce((sum, c) => sum + c.negativeItems.removed, 0)}
+            {clients.reduce((sum, c) => sum + (c.negativeItemsRemoved || 0), 0)}
           </div>
           <div className="text-sm text-gray-600">Items Removed</div>
         </div>
@@ -246,64 +261,70 @@ const ClientManagement: React.FC = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredClients.map((client) => (
-                <tr key={client.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">
-                        {client.personalInfo.firstName} {client.personalInfo.lastName}
+              {filteredClients.map((client) => {
+                const personalInfo = client.personal_info || {};
+                return (
+                  <tr key={client.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {personalInfo.firstName} {personalInfo.lastName}
+                        </div>
+                        <div className="text-sm text-gray-500 flex items-center space-x-4">
+                          <span className="flex items-center">
+                            <Mail className="w-3 h-3 mr-1" />
+                            {personalInfo.email}
+                          </span>
+                          <span className="flex items-center">
+                            <Phone className="w-3 h-3 mr-1" />
+                            {personalInfo.phone}
+                          </span>
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-500 flex items-center space-x-4">
-                        <span className="flex items-center">
-                          <Mail className="w-3 h-3 mr-1" />
-                          {client.personalInfo.email}
-                        </span>
-                        <span className="flex items-center">
-                          <Phone className="w-3 h-3 mr-1" />
-                          {client.personalInfo.phone}
-                        </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{client.case_number}</div>
+                      <div className="text-sm text-gray-500">
+                        Started {new Date(client.start_date).toLocaleDateString()}
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{client.caseInfo.caseNumber}</div>
-                    <div className="text-sm text-gray-500">
-                      Started {new Date(client.caseInfo.startDate).toLocaleDateString()}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-lg font-semibold text-gray-900">
-                      {client.creditScores.current.average}
-                    </div>
-                    <div className="text-sm">
-                      {getScoreTrend(client.creditScores.current.average, client.creditScores.initial.average)}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
-                      {client.negativeItems.removed}/{client.negativeItems.total} removed
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                      <div 
-                        className="bg-blue-600 h-2 rounded-full" 
-                        style={{ width: `${(client.negativeItems.removed / client.negativeItems.total) * 100}%` }}
-                      ></div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {getStatusBadge(client.caseInfo.status)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <Link
-                      to={`/clients/${client.id}`}
-                      className="text-blue-600 hover:text-blue-900 flex items-center space-x-1"
-                    >
-                      <Eye className="w-4 h-4" />
-                      <span>View</span>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-lg font-semibold text-gray-900">
+                        {client.currentScore || 'N/A'}
+                      </div>
+                      <div className="text-sm">
+                        {getScoreTrend(client.currentScore, client.initialScore)}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {client.negativeItemsRemoved || 0}/{client.negativeItemsTotal || 0} removed
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                        <div 
+                          className="bg-blue-600 h-2 rounded-full" 
+                          style={{ 
+                            width: `${client.negativeItemsTotal ? 
+                              (client.negativeItemsRemoved || 0) / client.negativeItemsTotal * 100 : 0}%` 
+                          }}
+                        ></div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {getStatusBadge(client.status)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <Link
+                        to={`/clients/${client.id}`}
+                        className="text-blue-600 hover:text-blue-900 flex items-center space-x-1"
+                      >
+                        <Eye className="w-4 h-4" />
+                        <span>View</span>
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

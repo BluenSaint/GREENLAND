@@ -13,31 +13,8 @@ import {
   Calendar,
   User
 } from 'lucide-react';
-
-interface DisputeTemplate {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  template: string;
-}
-
-interface Dispute {
-  id: string;
-  clientId: string;
-  clientName: string;
-  type: string;
-  creditor: string;
-  account: string;
-  amount: number;
-  status: 'pending' | 'in_progress' | 'completed' | 'rejected';
-  bureau: string;
-  disputeReason: string;
-  dateSent: string;
-  responseDate?: string;
-  followUpDate?: string;
-  templateUsed: string;
-}
+import { disputeService, disputeTemplateService, type Dispute } from '../services/disputeService';
+import type { DisputeTemplate } from '../lib/supabase';
 
 const DisputeManagement: React.FC = () => {
   const [disputes, setDisputes] = useState<Dispute[]>([]);
@@ -54,39 +31,14 @@ const DisputeManagement: React.FC = () => {
 
   const loadData = async () => {
     try {
-      // Load dispute templates
-      const templatesResponse = await fetch('/data/dispute-templates.json');
-      const templatesData = await templatesResponse.json();
+      setLoading(true);
+      const [disputesData, templatesData] = await Promise.all([
+        disputeService.getDisputes(),
+        disputeTemplateService.getTemplates()
+      ]);
+      
+      setDisputes(disputesData);
       setTemplates(templatesData);
-
-      // Generate sample disputes from client data
-      const clientsResponse = await fetch('/data/clients.json');
-      const clients = await clientsResponse.json();
-      
-      const sampleDisputes: Dispute[] = [];
-      clients.forEach((client: any) => {
-        client.negativeItems.items.forEach((item: any, index: number) => {
-          sampleDisputes.push({
-            id: `dispute-${client.id}-${index}`,
-            clientId: client.id,
-            clientName: `${client.personalInfo.firstName} ${client.personalInfo.lastName}`,
-            type: item.type,
-            creditor: item.creditor,
-            account: item.account,
-            amount: item.amount,
-            status: item.status === 'removed' ? 'completed' : 
-                   item.status === 'in_progress' ? 'in_progress' : 'pending',
-            bureau: item.bureau,
-            disputeReason: item.disputeReason,
-            dateSent: item.lastDisputed || '2025-06-01',
-            responseDate: item.status === 'removed' ? item.dateRemoved : undefined,
-            followUpDate: item.status === 'in_progress' ? '2025-07-01' : undefined,
-            templateUsed: 'template-001'
-          });
-        });
-      });
-      
-      setDisputes(sampleDisputes);
     } catch (error) {
       console.error('Failed to load data:', error);
     } finally {
@@ -320,17 +272,21 @@ const DisputeManagement: React.FC = () => {
             <AlertTriangle className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900">No disputes found</h3>
             <p className="mt-1 text-sm text-gray-500">
-              Get started by creating a new dispute letter.
+              {searchTerm || statusFilter !== 'all' 
+                ? 'Try adjusting your search criteria.' 
+                : 'Get started by creating a new dispute letter.'}
             </p>
-            <div className="mt-6">
-              <button
-                onClick={() => setShowNewDisputeModal(true)}
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-              >
-                <Plus className="-ml-1 mr-2 h-5 w-5" />
-                New Dispute
-              </button>
-            </div>
+            {(!searchTerm && statusFilter === 'all') && (
+              <div className="mt-6">
+                <button
+                  onClick={() => setShowNewDisputeModal(true)}
+                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                >
+                  <Plus className="-ml-1 mr-2 h-5 w-5" />
+                  New Dispute
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -352,81 +308,6 @@ const DisputeManagement: React.FC = () => {
           ))}
         </div>
       </div>
-
-      {/* New Dispute Modal */}
-      {showNewDisputeModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Create New Dispute</h3>
-            
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Client</label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option value="">Select Client</option>
-                    <option value="1">John Smith</option>
-                    <option value="2">Emily Rodriguez</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Credit Bureau</label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option value="equifax">Equifax</option>
-                    <option value="experian">Experian</option>
-                    <option value="transunion">TransUnion</option>
-                    <option value="all">All Bureaus</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Creditor</label>
-                  <input 
-                    type="text" 
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter creditor name"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
-                  <input 
-                    type="text" 
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter account number"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Dispute Template</label>
-                <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                  {templates.map((template) => (
-                    <option key={template.id} value={template.id}>{template.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex justify-end space-x-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowNewDisputeModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Create Dispute
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Template Preview Modal */}
       {selectedTemplate && (
@@ -450,7 +331,7 @@ const DisputeManagement: React.FC = () => {
             <div className="bg-white border rounded-lg p-4">
               <h4 className="font-medium text-gray-900 mb-2">Template Content:</h4>
               <div className="text-sm text-gray-700 whitespace-pre-line">
-                {selectedTemplate.template}
+                {selectedTemplate.template_content}
               </div>
             </div>
 
